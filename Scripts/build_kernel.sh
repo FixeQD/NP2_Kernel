@@ -68,6 +68,7 @@ fi
 EXTRA_CFG="out/ci-extra.config"
 : > "${EXTRA_CFG}"
 echo "CONFIG_KSU=y" >> "${EXTRA_CFG}"
+echo 'CONFIG_LOCALVERSION="-NP2"' >> "${EXTRA_CFG}"
 
 if [ "${SUSFS_SUPPORT}" = "true" ]; then
   echo "CONFIG_KSU_SUSFS=y" >> "${EXTRA_CFG}"
@@ -79,7 +80,10 @@ fi
 
 cat "${EXTRA_CFG}" >> out/.config
 make ${MAKE_ARGS} olddefconfig
-[ -f scripts/setlocalversion ] && sed -i 's/-dirty//g' scripts/setlocalversion || true
+if [ -f scripts/setlocalversion ]; then 
+  sed -i 's/-dirty//g' scripts/setlocalversion || true
+  sed -i 's/echo "\$res"/echo "\${res}-FixeQ"/' scripts/setlocalversion || true
+fi
 
 JOBS=$(( $(nproc) / 2 ))
 [ "${JOBS}" -lt 1 ] && JOBS=1

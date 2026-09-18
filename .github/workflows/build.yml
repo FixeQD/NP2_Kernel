@@ -47,6 +47,11 @@ on:
         required: false
         type: boolean
         default: false
+      nomount_support:
+        description: 'Enable NoMount kernel module'
+        required: false
+        type: boolean
+        default: true
       susfs_force:
         description: 'Force SUSFS patch apply (ignore failures)'
         required: false
@@ -179,6 +184,12 @@ jobs:
           cd "$KERNEL_DIR"
           curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash
 
+      - name: Setup NoMount
+        if: ${{ inputs.nomount_support == true }}
+        run: |
+          cd "$KERNEL_DIR"
+          curl -LSs "https://github.com/maxsteeel/nomount/raw/refs/heads/master/kernel/setup.sh" | bash
+
       - name: Apply extra patches
         if: ${{ inputs.extra_patches_dir != '' }}
         run: |
@@ -234,6 +245,7 @@ jobs:
         run: |
           SUSFS_SUPPORT="${{ inputs.susfs_support }}" \
           BBG_SUPPORT="${{ inputs.bbg_support }}" \
+          NOMOUNT_SUPPORT="${{ inputs.nomount_support }}" \
           Scripts/build_kernel.sh
 
       - name: CCache Stats

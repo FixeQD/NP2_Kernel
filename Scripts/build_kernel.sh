@@ -78,6 +78,10 @@ if [ "${BBG_SUPPORT}" = "true" ]; then
   echo "CONFIG_BBG=y" >> "${EXTRA_CFG}"
 fi
 
+if [ "${NOMOUNT_SUPPORT}" = "true" ]; then
+  echo "CONFIG_NOMOUNT=y" >> "${EXTRA_CFG}"
+fi
+
 cat "${EXTRA_CFG}" >> out/.config
 make ${MAKE_ARGS} olddefconfig
 if [ -f scripts/setlocalversion ]; then 
